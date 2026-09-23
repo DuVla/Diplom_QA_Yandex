@@ -45,24 +45,6 @@ class TestBurger:
 
         assert burger.ingredients == [ingredients[i] for i in expected_order]
 
-    def test_get_price_returns_sum_of_bun_and_ingredients(self):
-        burger = Burger()
-
-        bun = Mock()
-        bun.get_price.return_value = 100
-
-        ingredient_1 = Mock()
-        ingredient_1.get_price.return_value = 50
-
-        ingredient_2 = Mock()
-        ingredient_2.get_price.return_value = 30
-
-        burger.set_buns(bun)
-        burger.add_ingredient(ingredient_1)
-        burger.add_ingredient(ingredient_2)
-
-        assert burger.get_price() == 280
-
     def test_get_receipt_returns_correct_receipt(self):
         burger = Burger()
 
@@ -86,3 +68,22 @@ class TestBurger:
         ])
 
         assert burger.get_receipt() == expected_receipt
+
+    @pytest.mark.parametrize('bun_price, ingredient_prices, expected_price', [
+        (100, [], 200),
+        (100, [50], 250),
+        (100, [50, 30, 20], 300),
+    ])
+    def test_get_price_returns_sum_of_bun_and_ingredients(self, bun_price, ingredient_prices, expected_price):
+        burger = Burger()
+
+        bun = Mock()
+        bun.get_price.return_value = bun_price
+        burger.set_buns(bun)
+
+        for price in ingredient_prices:
+            ingredient = Mock()
+            ingredient.get_price.return_value = price
+            burger.add_ingredient(ingredient)
+
+        assert burger.get_price() == expected_price
