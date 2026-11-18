@@ -3,6 +3,5 @@ venv/
 __pycache__/
 .pytest_cache/
 .coverage
-htmlcov/
 .DS_Store
 .venv/
